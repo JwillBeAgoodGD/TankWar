@@ -7,23 +7,28 @@ public class Player : MonoBehaviour
     private GameObject[] multipleEnemys;
     public Transform closestEnemy;
     public bool enenmyContact;
-    public GameObject bulletPrefab;
-    public GameObject bulletLaunchPoint;
+    public List<GameObject> enemyInRange;
+    public CircleCollider2D attackRange;
     // Start is called before the first frame update
     void Start()
     {
-        closestEnemy = null;
-        enenmyContact = false;
-        
+        enemyInRange = new List<GameObject>();
+        attackRange = GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        closestEnemy = getClosestEnemy();
-        closestEnemy.gameObject.GetComponent<SpriteRenderer>().material.color = new Color(1, 0.7f, 0, 1);
+
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Enemy"))
+        {
+            enemyInRange.Add(collision.gameObject);
+        }
+    }
     public Transform getClosestEnemy()
     {
         multipleEnemys = GameObject.FindGameObjectsWithTag("Enemy");
@@ -43,12 +48,9 @@ public class Player : MonoBehaviour
         return trans;
     }
 
-   public void ShootBullet()
+   public void ShootTarget()
     {
-        if (Input.anyKeyDown)
-        {
-            Instantiate(bulletPrefab, bulletLaunchPoint.transform.position, bulletPrefab.transform.rotation);
-        }
+        Destroy(enemyInRange.Remove())
     }
 
 }
